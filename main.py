@@ -103,36 +103,35 @@ def main():
     year = args.year
 
     file_type = "json" 
-    bucket_name = "metacode-realestate-test"
-    # object_name = f"apt-trade-raw/deal_ymd={deal_ymd}/lawd_cd={lawd_cd}/result.json"
+    bucket_name = "metacode-population-20261015"
 
     if init_yn == "y":
         list_adm_cd = [
-            "11110"  # 종로구
-            , "11140"  # 중구
-            , "11170"  # 용산구
-            , "11200"  # 성동구
-            , "11215"  # 광진구
-            , "11230"  # 동대문구
-            , "11260"  # 중랑구
-            , "11290"  # 성북구
-            , "11305"  # 강북구
-            , "11320"  # 도봉구
-            , "11350"  # 노원구
-            , "11380"  # 은평구
-            , "11410"  # 서대문구
-            , "11440"  # 마포구
-            , "11470"  # 양천구
-            , "11500"  # 강서구
-            , "11530"  # 구로구
-            , "11545"  # 금천구
-            , "11560"  # 영등포구
-            , "11590"  # 동작구
-            , "11620"  # 관악구
-            , "11650"  # 서초구
-            , "11680"  # 강남구
-            , "11710"  # 송파구
-            , "11740"  # 강동구
+            "11010",  # 종로구
+            "11020",  # 중구
+            "11030",  # 용산구
+            "11040",  # 성동구
+            "11050",  # 광진구
+            "11060",  # 동대문구
+            "11070",  # 중랑구
+            "11080",  # 성북구
+            "11090",  # 강북구
+            "11100",  # 도봉구
+            "11110",  # 노원구
+            "11120",  # 은평구
+            "11130",  # 서대문구
+            "11140",  # 마포구
+            "11150",  # 양천구
+            "11160",  # 강서구
+            "11170",  # 구로구
+            "11180",  # 금천구
+            "11190",  # 영등포구
+            "11200",  # 동작구
+            "11210",  # 관악구
+            "11220",  # 서초구
+            "11230",  # 강남구
+            "11240",  # 송파구
+            "11250"   # 강동구
         ]
 
         years = list(range(2015, 2024))
@@ -142,13 +141,16 @@ def main():
                 result_json = get_data_from_api(target_adm_cd, target_year)
 
                 file_name = f"{target_year}_{target_adm_cd}_result.json"
+                object_name = f"total_statistics/total_year={target_year}/total_adm_cd={target_adm_cd}/result.json"
 
-                if result_json is not None:
-                    save_file(result_json, file_name, file_type)
-                    upload_to_s3(file_name, bucket_name, object_name)
-                else:
-                    with open(file_name, "w", encoding="utf-8") as f:
-                        pass
+                # if result_json is not None:
+                #     save_file(result_json, file_name, file_type)
+                # else:
+                #     with open(file_name, "w", encoding="utf-8") as f:
+                #         pass
+                save_file(result_json, file_name, file_type)
+
+                upload_to_s3(file_name, bucket_name, object_name)
 
     elif init_yn == "n":
         if not adm_cd or not year:
@@ -156,16 +158,18 @@ def main():
                 "-i가 'n'일 경우 -a(행정구역코드)와 -y(기준연도)는 필수 입력값입니다."
             )
 
-        # print(f"개별 수집 모드: 행정구역코드={adm_cd}, 기준연도={year}")
         result_json = get_data_from_api(adm_cd, year)
-        file_name = f"{target_year}_{target_adm_cd}_result.json"
+        file_name = f"{year}_{adm_cd}_result.json"
+        object_name = f"total_statistics/total_year={year}/total_adm_cd={adm_cd}/result.json"
 
-        if result_json is not None:
-            save_file(result_json, file_name, file_type)
-            upload_to_s3(file_name, bucket_name, object_name)
-        else:
-            with open(file_name, "w", encoding="utf-8") as f:
-                pass
+        # if result_json is not None:
+        #     save_file(result_json, file_name, file_type)
+        # else:
+        #     with open(file_name, "w", encoding="utf-8") as f:
+        #         pass
+        save_file(result_json, file_name, file_type)
+
+        upload_to_s3(file_name, bucket_name, object_name)
 
     else:
         raise Exception("올바른 값을 입력하세요. (y/n)")
